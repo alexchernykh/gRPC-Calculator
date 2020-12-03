@@ -1,17 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
-	//p "github.com/mactsouk/protobuf"
-	p "testAssignmment/calc_pb"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"net"
-	"os"
 	"strconv"
 	"strings"
+	p "testAssignmment/calc_pb"
 )
 var port = ":8080"
 type MessageServer struct {
@@ -63,11 +60,11 @@ func processOperation(op operation) (float64, error){
 func (MessageServer) CalcResult(ctx context.Context, r *p.Request) (*p.Response, error){
 
 
-		fmt.Println("Please Enter an operation that has to be done in a form (a + b ), with supported operations *,/,+,- :")
-		reader := bufio.NewReader(os.Stdin)
-		input, _ := reader.ReadString('\n')
-		input = strings.TrimSuffix(input, "\n")
-		c := strings.Split(input, " ")
+		//fmt.Println("Please Enter an operation that has to be done in a form (a + b ), with supported operations *,/,+,- :")
+		//reader := bufio.NewReader(os.Stdin)
+		//input, _ := reader.ReadString('\n')
+		//input = strings.TrimSuffix(input, "\n")
+		c := strings.Split(r.Text, " ")
 		var op = operation{operat: c[1]}
 		var err error
 		op.num1, op.num2, err = parseArgs(c)
