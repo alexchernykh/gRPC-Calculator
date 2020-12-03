@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package main;
+//option go_package = "github.com/example/path/test;gen"";";
+option go_package = "testAssignmment";
+message Request {
+  string text = 1;
+  string subtext = 2;
+}
+
+message Response {
+  string text = 1;
+  string subtext = 2;
+}
+
+service MessageService {
+  rpc CalcResult (Request) returns (Response);
+}
