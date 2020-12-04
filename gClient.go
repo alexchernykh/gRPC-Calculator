@@ -42,6 +42,7 @@ func ReadyToCalc(ctx context.Context, m p.MessageServiceClient) (*p.Response, er
 	}
 	return calculated_result, nil
 }
+
 func main() {
 
 	conn, err := grpc.Dial(port, grpc.WithInsecure())

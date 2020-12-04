@@ -98,6 +98,7 @@ func (MessageServer) CalcResult(ctx context.Context, r *p.Request) (*p.Response,
 				Text:res_str,
 				Subtext:"Successfully finished calculation!",
 			}
+			fmt.Println("Successfully finished calculation!")
 			return response, nil
 		}
 }
