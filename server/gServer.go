@@ -1,14 +1,16 @@
-package server
+package main
 
 import (
-	p "calculator/calc_pb"
 	"errors"
 	"fmt"
 	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+	"net"
 	"strconv"
 	"strings"
+	p "testAssignmment/calc_pb"
 )
-//var port = ":8080"
+
 
 //required in order to be able to create the gRPC server later on in your Go code.
 type MessageServer struct {
@@ -102,20 +104,20 @@ func (MessageServer) CalcResult(ctx context.Context, r *p.Request) (*p.Response,
 }
 
 
-//func main() {
-//
-//	server := grpc.NewServer()
-//	var messageServer MessageServer
-//
-//	p.RegisterMessageServiceServer(server, messageServer)
-//	listen, err := net.Listen("tcp", port)
-//
-//	if err != nil {
-//		fmt.Println(err)
-//		return
-//	}
-//	//listen to the port for new remote procedure calls
-//	fmt.Println("Starting serving requests...")
-//	server.Serve(listen)
-//
-//}
+func main() {
+	var port = ":8080"
+	server := grpc.NewServer()
+	var messageServer MessageServer
+
+	p.RegisterMessageServiceServer(server, messageServer)
+	listen, err := net.Listen("tcp", port)
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	//listen to the port for new remote procedure calls
+	fmt.Println("Starting serving requests...")
+	server.Serve(listen)
+
+}

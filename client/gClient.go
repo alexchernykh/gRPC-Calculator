@@ -2,12 +2,12 @@ package main
 
 import (
 	"bufio"
-	p "calculator/calc_pb"
 	"fmt"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"os"
 	"strings"
+	p "testAssignmment/calc_pb"
 )
 
 //Takes a string from user input return it without the new line suffix
