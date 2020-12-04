@@ -1,18 +1,23 @@
 syntax = "proto3";
 
 package main;
-//option go_package = "github.com/example/path/test;gen"";";
+// https://github.com/golang/protobuf/issues/139
+// option go_package = "github.com/example/path/test;gen"";";
 option go_package = "testAssignmment";
+
+// message structure to send by the client
 message Request {
   string text = 1;
   string subtext = 2;
 }
 
+//message structure received by the client
 message Response {
   string text = 1;
   string subtext = 2;
 }
 
+// service which will be called to calculate the result based on the input
 service MessageService {
   rpc CalcResult (Request) returns (Response);
 }

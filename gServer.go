@@ -11,20 +11,29 @@ import (
 	p "testAssignmment/calc_pb"
 )
 var port = ":8080"
+
+//required in order to be able to create the gRPC server later on in your Go code.
 type MessageServer struct {
 
 }
 
-
-type operation struct {
+// providing a simple structure to perform simple math operration
+type Operation struct {
 	num1, num2 float64
-	operat string
+	operator   string
 }
 
-func parseArgs(c []string) (float64, float64, error) {
-	if len(c)<3{
-		return 0.0, 0.0, errors.New("Not enough arguments")
+//testing the input for the right ampunt of parameters
+func testInputString(input []string) (error)  {
+	if len(input) !=3 {
+		return errors.New("Wrong amount of parameters in the input")
+	}else{
+		return  nil
 	}
+}
+
+// casting the numbers from string format to float for further calculations
+func parseArgs(c []string) (float64, float64, error) {
 	num1, err := strconv.ParseFloat(c[0], 64)
 	if err != nil {
 		return 0.0, 0.0, err
@@ -36,10 +45,10 @@ func parseArgs(c []string) (float64, float64, error) {
 	return num1, num2, nil
 }
 
-
-func processOperation(op operation) (float64, error){
+// mapping the operator to an allowed math operation and returning the result
+func processOperation(op Operation) (float64, error){
 	var result float64
-	switch op.operat {
+	switch op.operator {
 	case "*":
 		result = op.num1 * op.num2
 	case "/":
@@ -52,96 +61,62 @@ func processOperation(op operation) (float64, error){
 	case "-":
 		result = op.num1 - op.num2
 	default:
-		return 0 , errors.New("Not acceptable operation: ")
+		return 0 , errors.New("Not acceptable Operation: ")
 	}
 	return result, nil
 }
 
+// this is the implementation of the interface from calc.pd.go, that will be triggered by the client
+// Takes a request from the cluent and checks the input for errors , performs the simple math
+// operation and returns the result to the client
 func (MessageServer) CalcResult(ctx context.Context, r *p.Request) (*p.Response, error){
-
-
-		//fmt.Println("Please Enter an operation that has to be done in a form (a + b ), with supported operations *,/,+,- :")
-		//reader := bufio.NewReader(os.Stdin)
-		//input, _ := reader.ReadString('\n')
-		//input = strings.TrimSuffix(input, "\n")
+		fmt.Println(r.Subtext , "for ", r.Text)
 		c := strings.Split(r.Text, " ")
-		var op = operation{operat: c[1]}
-		var err error
+		err := testInputString(c)
+		if err != nil{
+			fmt.Println(err)
+			return nil, err
+		}
+
+		var op = Operation{operator: c[1]}
+
+		//parse the numbers from the input string
 		op.num1, op.num2, err = parseArgs(c)
 		if err != nil {
 			fmt.Println(err)
-			response := &p.Response{
-
-				Text:"Error",
-
-				Subtext:"Error",
-			}
-			return response, err
+			return nil, err
 		}
-		//res, err := processOperation(num1, c[1], num2)
+
+		//perform the Operation on the two numbers
 		res, err := processOperation(op)
 		if err != nil {
 			fmt.Println(err)
-			// todo return nothing in response and error
-			fmt.Println(err)
-			response := &p.Response{
-
-				Text:"Error",
-
-				Subtext:"Error",
-			}
-			return response, err
+			return nil, err
 		} else {
 			res_str := fmt.Sprintf("%f", res)
 			response := &p.Response{
-
 				Text:res_str,
-
-				Subtext:"Got it!",
+				Subtext:"Successfully finished calculation!",
 			}
 			return response, nil
-			//fmt.Println("Calculated result  is = ", res)
 		}
-
 }
 
-
-
-
-//
-//func (MessageServer) SayIt(ctx context.Context, r *p.Request) (*p.Response, error) {
-//
-//	fmt.Println("Request Text:", r.Text)
-//
-//	fmt.Println("Request SubText:", r.Subtext)
-//
-//	response := &p.Response{
-//
-//		Text:r.Text,
-//
-//		Subtext:"Got it!",
-//	}
-//	return response, nil
-//}
 
 func main() {
 
 	server := grpc.NewServer()
-
 	var messageServer MessageServer
 
 	p.RegisterMessageServiceServer(server, messageServer)
-
 	listen, err := net.Listen("tcp", port)
 
 	if err != nil {
-
 		fmt.Println(err)
 		return
 	}
-
-	fmt.Println("Serving requests...")
-
+	//listen to the port for new remote procedure calls
+	fmt.Println("Starting serving requests...")
 	server.Serve(listen)
 
 }
