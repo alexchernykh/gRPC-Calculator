@@ -1,7 +1,9 @@
 # gRPC calculator
 
 This is a gRPC implementation of simple math tasks.
-![gRPC Calculator](img/gRPC_2.png)
+
+![gRPCCalculator](./img/gRpc_2.png)
+
 
 ## Description
 
