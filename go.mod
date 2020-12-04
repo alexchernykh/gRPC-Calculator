@@ -1,4 +1,5 @@
-module gRPC-Calculator
+module github.com/alexchernykh/gRPC-Calculator
+
 
 go 1.15
 

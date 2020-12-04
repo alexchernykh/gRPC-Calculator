@@ -11,7 +11,7 @@ This Task requires several major steps.
 1. Initialise go.mod
 
     ```shell script
-    go mod init testAssignmment
+    go mod init gRPC-Calculator
     ```
 
 1. create a description `.proto` file, which will describe the communication between client and server and the methods, that will be called.

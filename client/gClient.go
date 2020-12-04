@@ -7,7 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"os"
 	"strings"
-	p "testAssignmment/calc_pb"
+	p "github.com/alexchernykh/gRPC-Calculator/calc_pb"
 )
 
 //Takes a string from user input return it without the new line suffix

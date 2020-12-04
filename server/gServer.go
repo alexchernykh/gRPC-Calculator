@@ -8,7 +8,7 @@ import (
 	"net"
 	"strconv"
 	"strings"
-	p "testAssignmment/calc_pb"
+	p "github.com/alexchernykh/gRPC-Calculator/calc_pb"
 )
 
 
