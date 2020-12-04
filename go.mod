@@ -1,4 +1,4 @@
-module testAssignmment
+module gRPC-Calculator
 
 go 1.15
 
