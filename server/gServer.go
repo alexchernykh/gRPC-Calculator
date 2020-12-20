@@ -1,16 +1,25 @@
 package main
 
 import (
-	"errors"
 	"fmt"
+	p "github.com/alexchernykh/gRPC-Calculator/calc_pb"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"net"
 	"strconv"
 	"strings"
-	p "github.com/alexchernykh/gRPC-Calculator/calc_pb"
 )
 
+
+type errorString struct {
+	s string
+}
+
+func (e *errorString) Error() string {
+	return e.s
+}
 
 //required in order to be able to create the gRPC server later on in your Go code.
 type MessageServer struct {
@@ -26,7 +35,7 @@ type Operation struct {
 //testing the input for the right ampunt of parameters
 func testInputString(input []string) (error)  {
 	if len(input) !=3 {
-		return errors.New("Wrong amount of parameters in the input")
+		return status.Error(codes.InvalidArgument, "Wrong amount of parameters in the input")
 	}else{
 		return  nil
 	}
@@ -36,11 +45,11 @@ func testInputString(input []string) (error)  {
 func parseArgs(c []string) (float64, float64, error) {
 	num1, err := strconv.ParseFloat(c[0], 64)
 	if err != nil {
-		return 0.0, 0.0, err
+		return 0.0, 0.0, status.Error(codes.InvalidArgument, "Invalid first argument")
 	}
 	num2, err := strconv.ParseFloat(c[2], 64)
 	if err != nil {
-		return 0.0, 0.0, err
+		return 0.0, 0.0, status.Error(codes.InvalidArgument, "Invalid second argument")
 	}
 	return num1, num2, nil
 }
@@ -53,7 +62,7 @@ func processOperation(op Operation) (float64, error){
 		result = op.num1 * op.num2
 	case "/":
 		if op.num2 == 0.0 {
-			return 0.0, errors.New("error: you tried to divide by zero.")
+			return 0.0,  status.Error(codes.InvalidArgument,"error: you tried to divide by zero.",)
 		}
 		result = op.num1 / op.num2
 	case "+":
@@ -61,7 +70,7 @@ func processOperation(op Operation) (float64, error){
 	case "-":
 		result = op.num1 - op.num2
 	default:
-		return 0 , errors.New("Not acceptable Operation: ")
+		return 0 ,  status.Error(codes.InvalidArgument,"Not acceptable Operation")
 	}
 	return result, nil
 }
