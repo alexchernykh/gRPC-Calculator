@@ -6,74 +6,16 @@ import (
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"net"
-	"strconv"
 	"strings"
+
 )
-
-
-type errorString struct {
-	s string
-}
-
-func (e *errorString) Error() string {
-	return e.s
-}
 
 //required in order to be able to create the gRPC server later on in your Go code.
 type MessageServer struct {
 
 }
 
-// providing a simple structure to perform simple math operration
-type Operation struct {
-	num1, num2 float64
-	operator   string
-}
-
-//testing the input for the right ampunt of parameters
-func testInputString(input []string) (error)  {
-	if len(input) !=3 {
-		return status.Error(codes.InvalidArgument, "Wrong amount of parameters in the input")
-	}else{
-		return  nil
-	}
-}
-
-// casting the numbers from string format to float for further calculations
-func parseArgs(c []string) (float64, float64, error) {
-	num1, err := strconv.ParseFloat(c[0], 64)
-	if err != nil {
-		return 0.0, 0.0, status.Error(codes.InvalidArgument, "Invalid first argument")
-	}
-	num2, err := strconv.ParseFloat(c[2], 64)
-	if err != nil {
-		return 0.0, 0.0, status.Error(codes.InvalidArgument, "Invalid second argument")
-	}
-	return num1, num2, nil
-}
-
-// mapping the operator to an allowed math operation and returning the result
-func processOperation(op Operation) (float64, error){
-	var result float64
-	switch op.operator {
-	case "*":
-		result = op.num1 * op.num2
-	case "/":
-		if op.num2 == 0.0 {
-			return 0.0,  status.Error(codes.InvalidArgument,"error: you tried to divide by zero.",)
-		}
-		result = op.num1 / op.num2
-	case "+":
-		result = op.num1 + op.num2
-	case "-":
-		result = op.num1 - op.num2
-	default:
-		return 0 ,  status.Error(codes.InvalidArgument,"Not acceptable Operation")
-	}
-	return result, nil
-}
 
 // this is the implementation of the interface from calc.pd.go, that will be triggered by the client
 // Takes a request from the cluent and checks the input for errors , performs the simple math
@@ -101,15 +43,16 @@ func (MessageServer) CalcResult(ctx context.Context, r *p.Request) (*p.Response,
 		if err != nil {
 			fmt.Println(err)
 			return nil, err
-		} else {
-			res_str := fmt.Sprintf("%f", res)
-			response := &p.Response{
-				Text:res_str,
-				Subtext:"Successfully finished calculation!",
-			}
-			fmt.Println("Successfully finished calculation!")
-			return response, nil
 		}
+
+		res_str := fmt.Sprintf("%f", res)
+		response := &p.Response{
+			Text:res_str,
+			Subtext: codes.Code.String(codes.OK),
+		}
+		fmt.Println("Successfully finished calculation!")
+		return response, nil
+
 }
 
 
