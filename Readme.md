@@ -77,8 +77,17 @@ An example gRPC calculator usage could look like the following. By running the s
     1000 * 13
     ```
 
+### Tests
+
+For tests execution:
+```shell script
+go test
+```
+
+To atumate the tests on every commit was added a Github Actions workflow.
+
 ### Further possible improvements
 
 - parsing complex strings
 - implementing additional math equations
-- error handling 
+✅ error handling 
