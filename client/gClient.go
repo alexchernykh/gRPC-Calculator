@@ -3,11 +3,11 @@ package main
 import (
 	"bufio"
 	"fmt"
+	p "github.com/alexchernykh/gRPC-Calculator/calc_pb"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"os"
 	"strings"
-	p "github.com/alexchernykh/gRPC-Calculator/calc_pb"
 )
 
 //Takes a string from user input return it without the new line suffix
@@ -19,20 +19,18 @@ func readInputData() string {
 	return input
 }
 
-
 //port based on which client will create a connection.
 var port = ":8080"
-
 
 //Takes an input string from STDIN, preprocesses it and sends it to the server by using the
 //MessageServiceClient, that is a gRPC ClientConnInterface implemented in the "testAssignmment/calc_pb"
 func ReadyToCalc(ctx context.Context, m p.MessageServiceClient) (*p.Response, error) {
 	input := readInputData()
-	fmt.Println("This was the input value: ",input)
+	fmt.Println("This was the input value: ", input)
 
 	//create request structure to send to CalcResult
 	request := &p.Request{
-		Text:input,
+		Text:    input,
 		Subtext: "New Calculation",
 	}
 	//call the remote func via the messageServiceClient
