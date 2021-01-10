@@ -86,8 +86,35 @@ go test
 
 To atumate the tests on every commit was added a Github Actions workflow.
 
+
+### Docker
+
+#### Server
+
+to run the server as a Dockerfile:
+
+1. Build the Dockerfile:
+    
+    ```shell script
+    docker build -t server -f server/Dockerfile .
+    ```
+
+1. Run the container
+
+    ```shell script
+    docker run -d -p 8080:8080 server
+    ```
+1. Run the client.
+
+    ```shell script
+    go run clien/gClient.go
+    ```
+
 ### Further possible improvements
 
 - parsing complex strings
 - implementing additional math equations
 ✅ error handling 
+
+
+
