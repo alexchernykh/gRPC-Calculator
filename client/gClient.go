@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"os"
 	"strings"
+	"flag"
 )
 
 //Takes a string from user input return it without the new line suffix
@@ -19,8 +20,7 @@ func readInputData() string {
 	return input
 }
 
-//port based on which client will create a connection.
-var port = ":8080"
+
 
 //Takes an input string from STDIN, preprocesses it and sends it to the server by using the
 //MessageServiceClient, that is a gRPC ClientConnInterface implemented in the "testAssignmment/calc_pb"
@@ -43,7 +43,15 @@ func ReadyToCalc(ctx context.Context, m p.MessageServiceClient) (*p.Response, er
 
 func main() {
 
-	conn, err := grpc.Dial(port, grpc.WithInsecure())
+	//port based on which client will create a connection.
+	// to speak to a localhost there is no need to provide an container name like server.
+	// However, when using docker container for client and separate for server, both containers will have separate localhosts
+	// and require a name to be provided.
+	//var port = "server:8080"
+	port := flag.String("port", ":8080", "a string")
+	flag.Parse()
+
+	conn, err := grpc.Dial(*port, grpc.WithInsecure())
 	if err != nil {
 		fmt.Println("Dial:", err)
 		return
