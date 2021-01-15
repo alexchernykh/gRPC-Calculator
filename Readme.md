@@ -110,11 +110,35 @@ to run the server as a Dockerfile:
     go run clien/gClient.go
     ```
 
+## Use container-container communication
+
+Made according to this [description](https://stackoverflow.com/questions/44642241/use-grpc-to-communicate-between-containers)
+
+1. Create network 
+
+    ```shell script
+    docker network create --driver bridge go-net
+    ```
+   
+1. Build and run the server. It is important to provide here a name for the server, so the client knows to whom he has to speak
+
+    ```shell script
+    docker build -t server -f server/Dockerfile .
+    docker run -d --network go-net  --name  server server
+    ```
+
+1. Build and run the client via a shell script, that simulates a simple input.
+
+    ```shell script
+    docker build -t client -f client/Dockerfile .
+    docker run -i --log-driver=none -a stdin -a stdout -a stderr --network go-net -p 8080:8080 client
+    ```
+
 ### Further possible improvements
 
 - parsing complex strings
 - implementing additional math equations
-✅ error handling 
+- ✅ error handling
 
 
 
