@@ -1,4 +1,5 @@
 package main
+
 //this go file contains calculations functions and validating functions of the input by the client
 
 import (
